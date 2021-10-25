@@ -2,9 +2,21 @@ package com.mindata.superheros.repositories;
 
 import com.mindata.superheros.models.Superhero;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface SuperherosRepository extends JpaRepository<Superhero, Long> {
-    List<Superhero> findWithWordInName(final String wordInName);
+
+    /**
+     * Find all superheroes with word in name.
+     *
+     * @param wordInName    the word in name to find.
+     * @return superheroes's list.
+     */
+    @Query(value="select * from superhero s where UPPER(s.name) LIKE CONCAT('%',:wordInName,'%')", nativeQuery=true)
+    List<Superhero> findWithWordInName(@Param("wordInName") final String wordInName);
 }
