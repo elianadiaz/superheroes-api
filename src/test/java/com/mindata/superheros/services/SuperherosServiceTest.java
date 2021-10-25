@@ -1,9 +1,12 @@
 package com.mindata.superheros.services;
 
-import org.junit.jupiter.api.BeforeAll;
+import com.mindata.superheros.exceptions.SuperheroException;
+import com.mindata.superheros.models.Superhero;
+import com.mindata.superheros.repositories.SuperherosRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +35,7 @@ public class SuperherosServiceTest {
 
     private SuperherosService superherosService;
 
-    @BeforeAll
+    @BeforeTestClass
     public void setUpd() {
         superherosService = new SuperherosServiceImpl(superherosRepository);
     }
