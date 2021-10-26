@@ -1,8 +1,8 @@
-package com.mindata.superheros.services;
+package com.mindata.superheroes.services;
 
-import com.mindata.superheros.exceptions.SuperheroException;
-import com.mindata.superheros.models.Superhero;
-import com.mindata.superheros.repositories.SuperherosRepository;
+import com.mindata.superheroes.exceptions.SuperheroException;
+import com.mindata.superheroes.models.Superhero;
+import com.mindata.superheroes.repositories.SuperherosRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

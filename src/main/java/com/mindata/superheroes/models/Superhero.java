@@ -1,6 +1,6 @@
-package com.mindata.superheros.models;
+package com.mindata.superheroes.models;
 
-import com.mindata.superheros.constants.FieldConstant;
+import com.mindata.superheroes.constants.FieldConstant;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;

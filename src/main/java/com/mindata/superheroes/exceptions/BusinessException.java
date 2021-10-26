@@ -1,6 +1,6 @@
-package com.mindata.superheros.exceptions;
+package com.mindata.superheroes.exceptions;
 
-import com.mindata.superheros.responses.ErrorResponse;
+import com.mindata.superheroes.responses.ErrorResponse;
 
 public abstract class BusinessException extends Exception {
 

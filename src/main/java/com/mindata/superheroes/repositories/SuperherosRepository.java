@@ -1,6 +1,6 @@
-package com.mindata.superheros.repositories;
+package com.mindata.superheroes.repositories;
 
-import com.mindata.superheros.models.Superhero;
+import com.mindata.superheroes.models.Superhero;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

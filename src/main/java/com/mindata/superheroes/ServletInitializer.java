@@ -1,4 +1,4 @@
-package com.mindata.superheros;
+package com.mindata.superheroes;
 
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;

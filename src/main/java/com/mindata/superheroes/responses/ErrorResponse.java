@@ -1,4 +1,4 @@
-package com.mindata.superheros.responses;
+package com.mindata.superheroes.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
