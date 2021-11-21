@@ -19,17 +19,27 @@ repositories {
 	mavenCentral()
 }
 
+configurations {
+	compile.exclude module: 'spring-boot-starter-tomcat'
+	compile.exclude group: 'org.apache.tomcat'
+	compile.exclude module: 'tomcat-embed-el'
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation('org.springframework.boot:spring-boot-starter-web') {
+		exclude module: "spring-boot-starter-tomcat"
+		exclude module: "tomcat-embed-el"
+	}
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.flywaydb:flyway-core'
 	implementation 'org.apache.commons:commons-lang3:3.0'
 	implementation 'com.google.code.findbugs:jsr305:3.0.2'
+	implementation 'com.sparkjava:spark-core:2.9.3'
+	implementation 'com.google.code.gson:gson:2.8.9'
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.hamcrest:hamcrest:2.2'

@@ -2,7 +2,7 @@ package com.mindata.superheroes.services;
 
 import com.mindata.superheroes.exceptions.SuperheroException;
 import com.mindata.superheroes.models.Superhero;
-import com.mindata.superheroes.repositories.SuperherosRepository;
+import com.mindata.superheroes.repositories.SuperheroRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SuperherosServiceTest {
+public class SuperheroServiceTest {
 
     private static final Long SUPERHERO_ID = 1L;
     private static final String SUPERHERO_NAME = "Superhero One";
@@ -36,13 +36,13 @@ public class SuperherosServiceTest {
     private static final String WORD_IN_NAME = "super";
 
     @Mock
-    private SuperherosRepository superherosRepository;
+    private SuperheroRepository superheroRepository;
 
-    private SuperherosService superherosService;
+    private SuperheroService superheroService;
 
     @BeforeEach
     public void setUpd() {
-        superherosService = new SuperherosServiceImpl(superherosRepository);
+        superheroService = new SuperheroServiceImpl(superheroRepository);
     }
 
     @Test
@@ -50,48 +50,48 @@ public class SuperherosServiceTest {
         final List<Superhero> superheroesMock = new ArrayList<>();
         superheroesMock.add(mock(Superhero.class));
         superheroesMock.add(mock(Superhero.class));
-        when(superherosRepository.findAll()).thenReturn(superheroesMock);
+        when(superheroRepository.findAll()).thenReturn(superheroesMock);
 
-        final List<Superhero> superheroes = superherosService.getSuperheros();
+        final List<Superhero> superheroes = superheroService.getSuperheroes();
 
         assertNotNull(superheroes);
         assertFalse(superheroes.isEmpty());
         assertEquals(superheroesMock.size(), superheroes.size());
 
-        verify(superherosRepository, times(1)).findAll();
+        verify(superheroRepository, times(1)).findAll();
     }
 
     @Test
     public void giveIdWhenGetSuperheroByIdThenReturnSuperhero() throws SuperheroException {
-        when(superherosRepository.findById(SUPERHERO_ID)).thenReturn(Optional.of(mock(Superhero.class)));
+        when(superheroRepository.findById(SUPERHERO_ID)).thenReturn(Optional.of(mock(Superhero.class)));
 
-        final Superhero superhero = superherosService.getSuperheroById(SUPERHERO_ID);
+        final Superhero superhero = superheroService.getSuperheroById(SUPERHERO_ID);
 
         assertNotNull(superhero);
 
-        verify(superherosRepository, times(1)).findById(SUPERHERO_ID);
+        verify(superheroRepository, times(1)).findById(SUPERHERO_ID);
     }
 
     @Test
     public void giveIncorrectIdWhenGetSuperheroByIdThenReturnBadRequest() {
-        when(superherosRepository.findById(SUPERHERO_ID)).thenReturn(Optional.empty());
+        when(superheroRepository.findById(SUPERHERO_ID)).thenReturn(Optional.empty());
 
         final SuperheroException exception = assertThrows(SuperheroException.class,
-            () -> superherosService.getSuperheroById(SUPERHERO_ID));
+            () -> superheroService.getSuperheroById(SUPERHERO_ID));
 
         assertEquals("superhero_not_found", exception.getError());
         assertEquals("Invalid or not found superhero", exception.getMessage());
         assertEquals(HttpStatus.NOT_FOUND.value(), exception.getStatus());
 
-        verify(superherosRepository, times(1)).findById(SUPERHERO_ID);
+        verify(superheroRepository, times(1)).findById(SUPERHERO_ID);
     }
 
     @Test
     public void giveWordWhenGetSuperheroesWithWordInNameThenReturnAllSuperherosWithWordInName() {
         final List<Superhero> superheroes = getMocksSuperheros();
-        when(superherosRepository.findWithWordInName(WORD_IN_NAME)).thenReturn(superheroes);
+        when(superheroRepository.findWithWordInName(WORD_IN_NAME)).thenReturn(superheroes);
 
-        final List<Superhero> superheroesResult = superherosService.getSuperheroesWithWordInName(WORD_IN_NAME);
+        final List<Superhero> superheroesResult = superheroService.getSuperheroesWithWordInName(WORD_IN_NAME);
 
         assertNotNull(superheroesResult);
         assertFalse(superheroesResult.isEmpty());
@@ -102,7 +102,7 @@ public class SuperherosServiceTest {
             assertThat(superhero.getName(), containsStringIgnoringCase(WORD_IN_NAME));
         });
 
-        verify(superherosRepository, times(1)).findWithWordInName(WORD_IN_NAME);
+        verify(superheroRepository, times(1)).findWithWordInName(WORD_IN_NAME);
     }
 
     @Test
@@ -112,26 +112,26 @@ public class SuperherosServiceTest {
 
         final Superhero savedSuperhero = mock(Superhero.class);
         when(savedSuperhero.getName()).thenReturn(SUPERHERO_NAME);
-        when(superherosRepository.findById(SUPERHERO_ID)).thenReturn(Optional.of(savedSuperhero));
+        when(superheroRepository.findById(SUPERHERO_ID)).thenReturn(Optional.of(savedSuperhero));
 
         final Superhero updatedSuperhero = mock(Superhero.class);
         when(updatedSuperhero.getName()).thenReturn("new name");
-        when(superherosRepository.saveAndFlush(any(Superhero.class))).thenReturn(updatedSuperhero);
+        when(superheroRepository.saveAndFlush(any(Superhero.class))).thenReturn(updatedSuperhero);
 
-        final Superhero superhero = superherosService.updateSuperhero(SUPERHERO_ID, superheroWithNewName);
+        final Superhero superhero = superheroService.updateSuperhero(SUPERHERO_ID, superheroWithNewName);
 
         assertNotNull(superhero);
         assertEquals(updatedSuperhero.getName(), superhero.getName());
 
-        verify(superherosRepository, times(1)).findById(SUPERHERO_ID);
-        verify(superherosRepository, times(1)).saveAndFlush(any(Superhero.class));
+        verify(superheroRepository, times(1)).findById(SUPERHERO_ID);
+        verify(superheroRepository, times(1)).saveAndFlush(any(Superhero.class));
     }
 
     @Test
     public void giveIdToDeleteWhenDeleteSuperheroByIdThenReturnSuccess() {
-        superherosService.deleteSuperhero(SUPERHERO_ID);
+        superheroService.deleteSuperhero(SUPERHERO_ID);
 
-        verify(superherosRepository, times(1)).deleteById(SUPERHERO_ID);
+        verify(superheroRepository, times(1)).deleteById(SUPERHERO_ID);
     }
 
     private List<Superhero> getMocksSuperheros() {

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SuperherosRepository extends JpaRepository<Superhero, Long> {
+public interface SuperheroRepository extends JpaRepository<Superhero, Long> {
 
     /**
      * Find all superheroes with word in name.
@@ -17,6 +17,6 @@ public interface SuperherosRepository extends JpaRepository<Superhero, Long> {
      * @param wordInName    the word in name to find.
      * @return superheroes's list.
      */
-    @Query(value="select * from superhero s where UPPER(s.name) LIKE CONCAT('%',:wordInName,'%')", nativeQuery=true)
+    @Query(value="select * from superhero s where UPPER(s.name) LIKE UPPER(CONCAT('%',:wordInName,'%'))", nativeQuery=true)
     List<Superhero> findWithWordInName(@Param("wordInName") final String wordInName);
 }

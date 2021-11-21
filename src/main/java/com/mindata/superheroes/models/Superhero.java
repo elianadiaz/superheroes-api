@@ -1,6 +1,6 @@
 package com.mindata.superheroes.models;
 
-import com.mindata.superheroes.constants.FieldConstant;
+import com.mindata.superheroes.constants.FieldConstants;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -25,7 +25,7 @@ public class Superhero implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false, length = FieldConstant.NAME_LENGTH)
+    @Column(nullable = false, length = FieldConstants.NAME_LENGTH)
     private String name;
 
     @Override

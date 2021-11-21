@@ -1,18 +1,27 @@
 package com.mindata.superheroes.services;
 
+import com.mindata.superheroes.entities.Filter;
 import com.mindata.superheroes.exceptions.SuperheroException;
 import com.mindata.superheroes.models.Superhero;
 
 import java.util.List;
 
-public interface SuperherosService {
+public interface SuperheroService {
+
+    /**
+     * Get all superheroes.
+     *
+     * @param filter    filters to get superheroes.
+     * @return superheroes's list.
+     */
+    List<Superhero> getSuperheroes(final Filter filter);
 
     /**
      * Get all superheroes.
      *
      * @return superheroes's list.
      */
-    List<Superhero> getSuperheros();
+    List<Superhero> getSuperheroes();
 
     /**
      * Get superhero by id.
