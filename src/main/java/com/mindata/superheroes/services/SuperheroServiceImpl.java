@@ -4,8 +4,10 @@ import com.mindata.superheroes.entities.Filter;
 import com.mindata.superheroes.exceptions.SuperheroException;
 import com.mindata.superheroes.models.Superhero;
 import com.mindata.superheroes.repositories.SuperheroRepository;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,6 +16,8 @@ import java.util.List;
 
 @Service
 public class SuperheroServiceImpl implements SuperheroService {
+
+    private static final String NAME_CACHE = "superheroes";
 
     private final SuperheroRepository superheroRepository;
 
@@ -36,16 +40,19 @@ public class SuperheroServiceImpl implements SuperheroService {
     }
 
     @Override
+    @Cacheable(NAME_CACHE)
     public List<Superhero> getSuperheroes() {
         return this.superheroRepository.findAll();
     }
 
     @Override
+    @Cacheable(NAME_CACHE)
     public Superhero getSuperheroById(final Long superheroId)  throws SuperheroException {
         return this.superheroRepository.findById(superheroId).orElseThrow(() -> SuperheroException.ofNotFoundSuperhero());
     }
 
     @Override
+    @Cacheable(NAME_CACHE)
     public List<Superhero> getSuperheroesWithWordInName(final String wordInName) {
         if (wordInName == null || wordInName.trim().isBlank()) {
             return Collections.emptyList();
@@ -56,6 +63,7 @@ public class SuperheroServiceImpl implements SuperheroService {
 
     @Transactional
     @Override
+    @CachePut(NAME_CACHE)
     public Superhero updateSuperhero(final Long superheroId, final Superhero superheroWithUpdates) throws SuperheroException {
         if (superheroWithUpdates == null || superheroId == null
             || superheroWithUpdates.getName() == null || superheroWithUpdates.getName().trim().isBlank()) {
@@ -73,6 +81,7 @@ public class SuperheroServiceImpl implements SuperheroService {
     }
 
     @Override
+    @CacheEvict(NAME_CACHE)
     public void deleteSuperhero(final Long superheroId) {
         this.superheroRepository.deleteById(superheroId);
     }

@@ -1,8 +1,6 @@
 package com.mindata.superheroes.exceptions;
 
-import com.mindata.superheroes.responses.ErrorResponse;
-
-public abstract class BusinessException extends Exception {
+public abstract class BusinessException extends BaseException {
 
     /**
      * Creates a BusinessException with message and cause.
@@ -23,9 +21,4 @@ public abstract class BusinessException extends Exception {
         super(message);
     }
 
-    /**
-     * Maps the current Business Exception to a REST ErrorResponse
-     * @return the ErrorResponse representing the current BusinessException
-     */
-    public abstract ErrorResponse toErrorResponse();
 }

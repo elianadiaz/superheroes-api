@@ -5,15 +5,13 @@ import com.mindata.superheroes.auth.AuthorizationInterceptor;
 import com.mindata.superheroes.auth.Permission;
 import com.mindata.superheroes.controllers.SuperheroController;
 import com.mindata.superheroes.exceptions.AuthorizationException;
-import com.mindata.superheroes.models.Superhero;
+import com.mindata.superheroes.responses.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 
 import javax.annotation.PostConstruct;
-
-import java.util.List;
 
 import static com.mindata.superheroes.constants.ApiConstants.CONTENT_TYPE;
 import static com.mindata.superheroes.constants.RouteConstants.HEADER_TOKEN;
@@ -62,7 +60,7 @@ public class Router {
                 AuthorizationInterceptor.validateUser(request.headers(HEADER_TOKEN), Permission.VIEW);
             } catch (final AuthorizationException e) {
                 response.status(e.getStatus());
-                return this.gson.toJson(e, AuthorizationException.class);
+                return this.gson.toJson(e.toErrorResponse(), ErrorResponse.class);
             }
 
             response.type(CONTENT_TYPE);
@@ -74,7 +72,7 @@ public class Router {
                 AuthorizationInterceptor.validateUser(request.headers(HEADER_TOKEN), Permission.VIEW);
             } catch (final AuthorizationException e) {
                 response.status(e.getStatus());
-                return this.gson.toJson(e, AuthorizationException.class);
+                return this.gson.toJson(e.toErrorResponse(), AuthorizationException.class);
             }
 
             response.type(CONTENT_TYPE);
@@ -86,7 +84,7 @@ public class Router {
                 AuthorizationInterceptor.validateUser(request.headers(HEADER_TOKEN), Permission.UPDATE);
             } catch (final AuthorizationException e) {
                 response.status(e.getStatus());
-                return this.gson.toJson(e, AuthorizationException.class);
+                return this.gson.toJson(e.toErrorResponse(), AuthorizationException.class);
             }
 
             response.type(CONTENT_TYPE);
@@ -98,11 +96,11 @@ public class Router {
                 AuthorizationInterceptor.validateUser(request.headers(HEADER_TOKEN), Permission.DELETE);
             } catch (final AuthorizationException e) {
                 response.status(e.getStatus());
-                return this.gson.toJson(e, AuthorizationException.class);
+                return this.gson.toJson(e.toErrorResponse(), AuthorizationException.class);
             }
 
             superheroController.deleteSuperheroById(request, response);
-            return this.gson.toJson("{'\"'status\": \"success\"}");
+            return this.gson.toJson("{\"status\": \"success\"}");
         });
     }
 

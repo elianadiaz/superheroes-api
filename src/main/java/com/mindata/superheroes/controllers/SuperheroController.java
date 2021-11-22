@@ -5,7 +5,6 @@ import com.google.gson.JsonSyntaxException;
 import com.mindata.superheroes.entities.Filter;
 import com.mindata.superheroes.exceptions.SuperheroException;
 import com.mindata.superheroes.models.Superhero;
-import com.mindata.superheroes.responses.ErrorResponse;
 import com.mindata.superheroes.services.SuperheroService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class SuperheroController {
         return superheroService.getSuperheroes(filter);
     }
 
-    public Superhero getSuperheroById(final Request request, final Response response) throws ErrorResponse {
+    public Superhero getSuperheroById(final Request request, final Response response) throws SuperheroException {
         final Long superheroId = getSuperheroId(request);
 
         try {
@@ -46,11 +45,11 @@ public class SuperheroController {
             return superheroService.getSuperheroById(superheroId);
         } catch (final SuperheroException e) {
             response.status(e.getStatus());
-            throw e.toErrorResponse();
+            throw e;
         }
     }
 
-    public Superhero updateSuperhero(final Request request, final Response response) throws ErrorResponse {
+    public Superhero updateSuperhero(final Request request, final Response response) throws SuperheroException {
         final Long superheroId = getSuperheroId(request);
 
         try {
@@ -58,7 +57,7 @@ public class SuperheroController {
             return superheroService.updateSuperhero(superheroId, this.gson.fromJson(request.body(), Superhero.class));
         } catch (final SuperheroException e) {
             response.status(e.getStatus());
-            throw e.toErrorResponse();
+            throw e;
         } catch (final JsonSyntaxException e) {
             response.status(HttpStatus.BAD_REQUEST.value());
             throw e;

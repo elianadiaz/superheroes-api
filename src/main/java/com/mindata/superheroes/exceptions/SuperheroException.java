@@ -86,13 +86,8 @@ public class SuperheroException extends BusinessException {
     }
 
     @Override
-    public Throwable getCause() {
-        return getCause();
-    }
-
-    @Override
     public ErrorResponse toErrorResponse() {
-        return new ErrorResponse(getCause(), message, error, status);
+        return new ErrorResponse(message, error);
     }
 
     @Override

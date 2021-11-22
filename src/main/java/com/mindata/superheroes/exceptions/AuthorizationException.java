@@ -1,11 +1,12 @@
 package com.mindata.superheroes.exceptions;
 
+import com.mindata.superheroes.responses.ErrorResponse;
 import lombok.Getter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class AuthorizationException extends Exception {
+public class AuthorizationException extends BaseException {
 
     private static final long serialVersionUID = 1L;
 
@@ -55,8 +56,8 @@ public class AuthorizationException extends Exception {
     }
 
     @Override
-    public Throwable getCause() {
-        return getCause();
+    public ErrorResponse toErrorResponse() {
+        return new ErrorResponse(message, error);
     }
 
     @Override
