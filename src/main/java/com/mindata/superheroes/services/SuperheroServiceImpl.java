@@ -8,11 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Collections;
-import java.util.List;
 
 @Service
 public class SuperheroServiceImpl implements SuperheroService {
@@ -31,18 +32,18 @@ public class SuperheroServiceImpl implements SuperheroService {
     }
 
     @Override
-    public List<Superhero> getSuperheroes(final Filter filter) {
+    public Page<Superhero> getSuperheroes(final Filter filter, int page, int size) {
         if (filter != null && filter.getWordInName() != null && !filter.getWordInName().isBlank()) {
-            return getSuperheroesWithWordInName(filter.getWordInName());
+            return getSuperheroesWithWordInName(filter.getWordInName(), page, size);
         }
 
-        return getSuperheroes();
+        return getSuperheroes(page, size);
     }
 
     @Override
     @Cacheable(NAME_CACHE)
-    public List<Superhero> getSuperheroes() {
-        return this.superheroRepository.findAll();
+    public Page<Superhero> getSuperheroes(int page, int size) {
+        return this.superheroRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")));
     }
 
     @Override
@@ -53,12 +54,12 @@ public class SuperheroServiceImpl implements SuperheroService {
 
     @Override
     @Cacheable(NAME_CACHE)
-    public List<Superhero> getSuperheroesWithWordInName(final String wordInName) {
+    public Page<Superhero> getSuperheroesWithWordInName(final String wordInName, int page, int size) {
         if (wordInName == null || wordInName.trim().isBlank()) {
-            return Collections.emptyList();
+            return Page.empty();
         }
 
-        return this.superheroRepository.findWithWordInName(wordInName.trim());
+        return this.superheroRepository.findWithWordInName(wordInName.trim(), PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "id")));
     }
 
     @Transactional

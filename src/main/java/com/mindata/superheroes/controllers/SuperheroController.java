@@ -7,6 +7,7 @@ import com.mindata.superheroes.exceptions.SuperheroException;
 import com.mindata.superheroes.models.Superhero;
 import com.mindata.superheroes.services.SuperheroService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/superheroes")
@@ -35,12 +34,14 @@ public class SuperheroController {
         this.superheroService = superheroService;
     }
 
-    // TODO: FALTA EL PAGINADO
     @Authorization(permission = Permission.VIEW)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Superhero>> getAllSuperheroes(@RequestHeader(HEADER_TOKEN) String token,
-        @RequestParam(required = false, name = "name") final String name) {
-        return new ResponseEntity<>(superheroService.getSuperheroes(new Filter(name)), HttpStatus.OK);
+    public ResponseEntity<Page<Superhero>> getAllSuperheroes(
+        @RequestHeader(HEADER_TOKEN) String token,
+        @RequestParam(required = false, name = "name") final String name,
+        @RequestParam final int page,
+        @RequestParam final int size) {
+        return new ResponseEntity<>(superheroService.getSuperheroes(new Filter(name), page, size), HttpStatus.OK);
     }
 
     @Authorization(permission = Permission.VIEW)

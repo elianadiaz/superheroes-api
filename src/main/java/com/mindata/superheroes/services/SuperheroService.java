@@ -3,8 +3,7 @@ package com.mindata.superheroes.services;
 import com.mindata.superheroes.entities.Filter;
 import com.mindata.superheroes.exceptions.SuperheroException;
 import com.mindata.superheroes.models.Superhero;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public interface SuperheroService {
 
@@ -12,16 +11,20 @@ public interface SuperheroService {
      * Get all superheroes.
      *
      * @param filter    filters to get superheroes.
-     * @return superheroes's list.
+     * @param page      the page.
+     * @param size      the page size.
+     * @return Paginated listing of Superheroes.
      */
-    List<Superhero> getSuperheroes(final Filter filter);
+    Page<Superhero> getSuperheroes(final Filter filter, int page, int size);
 
     /**
      * Get all superheroes.
      *
-     * @return superheroes's list.
+     * @param page      the page.
+     * @param size      the page size.
+     * @return Paginated listing of Superheroes.
      */
-    List<Superhero> getSuperheroes();
+    Page<Superhero> getSuperheroes(int page, int size);
 
     /**
      * Get superhero by id.
@@ -36,9 +39,11 @@ public interface SuperheroService {
      * Get all all the superheroes that contain that word in their name.
      *
      * @param wordInName    the word to find in name.
-     * @return superheroes's list.
+     * @param page          the page.
+     * @param size          the page size.
+     * @return Paginated listing of Superheroes.
      */
-    List<Superhero> getSuperheroesWithWordInName(final String wordInName);
+    Page<Superhero> getSuperheroesWithWordInName(final String wordInName, int page, int size);
 
     /**
      * Update superhero.

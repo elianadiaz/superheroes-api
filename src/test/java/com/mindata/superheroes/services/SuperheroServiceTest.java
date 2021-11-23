@@ -8,6 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -50,15 +54,16 @@ public class SuperheroServiceTest {
         final List<Superhero> superheroesMock = new ArrayList<>();
         superheroesMock.add(mock(Superhero.class));
         superheroesMock.add(mock(Superhero.class));
-        when(superheroRepository.findAll()).thenReturn(superheroesMock);
+        final PageRequest pageRequest = PageRequest.of(1, 4, Sort.by(Sort.Direction.ASC, "id"));
+        when(superheroRepository.findAll(pageRequest)).thenReturn(new PageImpl<>(superheroesMock));
 
-        final List<Superhero> superheroes = superheroService.getSuperheroes();
+        final Page<Superhero> superheroes = superheroService.getSuperheroes(1, 4);
 
         assertNotNull(superheroes);
         assertFalse(superheroes.isEmpty());
-        assertEquals(superheroesMock.size(), superheroes.size());
+        assertEquals(superheroesMock.size(), superheroes.toList().size());
 
-        verify(superheroRepository, times(1)).findAll();
+        verify(superheroRepository, times(1)).findAll(pageRequest);
     }
 
     @Test
@@ -88,21 +93,22 @@ public class SuperheroServiceTest {
 
     @Test
     public void giveWordWhenGetSuperheroesWithWordInNameThenReturnAllSuperherosWithWordInName() {
-        final List<Superhero> superheroes = getMocksSuperheros();
-        when(superheroRepository.findWithWordInName(WORD_IN_NAME)).thenReturn(superheroes);
+        final Page<Superhero> superheroes = getMocksSuperheros();
+        final PageRequest pageRequest = PageRequest.of(1, 4);
+        when(superheroRepository.findWithWordInName(WORD_IN_NAME, pageRequest)).thenReturn(superheroes);
 
-        final List<Superhero> superheroesResult = superheroService.getSuperheroesWithWordInName(WORD_IN_NAME);
+        final Page<Superhero> superheroesResult = superheroService.getSuperheroesWithWordInName(WORD_IN_NAME, 1, 4);
 
         assertNotNull(superheroesResult);
         assertFalse(superheroesResult.isEmpty());
-        assertEquals(superheroes.size(), superheroesResult.size());
-        superheroes.forEach(superhero -> assertTrue(superheroesResult.contains(superhero)));
+        assertEquals(superheroes.toList().size(), superheroesResult.toList().size());
+        superheroes.forEach(superhero -> assertTrue(superheroesResult.toList().contains(superhero)));
         superheroesResult.forEach(superhero -> {
             assertNotNull(superhero.getName());
             assertThat(superhero.getName(), containsStringIgnoringCase(WORD_IN_NAME));
         });
 
-        verify(superheroRepository, times(1)).findWithWordInName(WORD_IN_NAME);
+        verify(superheroRepository, times(1)).findWithWordInName(WORD_IN_NAME, pageRequest);
     }
 
     @Test
@@ -134,7 +140,7 @@ public class SuperheroServiceTest {
         verify(superheroRepository, times(1)).deleteById(SUPERHERO_ID);
     }
 
-    private List<Superhero> getMocksSuperheros() {
+    private Page<Superhero> getMocksSuperheros() {
         final List<Superhero> superheroes = new ArrayList<>();
 
         final Superhero superheroOne = mock(Superhero.class);
@@ -145,6 +151,6 @@ public class SuperheroServiceTest {
         when(superheroTwo.getName()).thenReturn(OTHER_SUPERHERO_NAME);
         superheroes.add(superheroTwo);
 
-        return superheroes;
+        return new PageImpl<>(superheroes);
     }
 }
