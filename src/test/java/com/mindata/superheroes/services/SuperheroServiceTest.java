@@ -81,7 +81,7 @@ public class SuperheroServiceTest {
 
         assertEquals("superhero_not_found", exception.getError());
         assertEquals("Invalid or not found superhero", exception.getMessage());
-        assertEquals(HttpStatus.NOT_FOUND.value(), exception.getStatus());
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatus());
 
         verify(superheroRepository, times(1)).findById(SUPERHERO_ID);
     }

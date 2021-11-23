@@ -1,5 +1,8 @@
 package com.mindata.superheroes.interceptors;
 
+import com.mindata.superheroes.auth.Authorization;
+import com.mindata.superheroes.auth.AuthorizationValidator;
+import com.mindata.superheroes.exceptions.AuthorizationException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -13,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 @Slf4j
-public class ControllerInterceptor {
+public final class ControllerInterceptor {
 
     private final ThreadLocal<Long> startTime;
 
@@ -40,7 +43,7 @@ public class ControllerInterceptor {
             log.info("Time consumed: {} ms.", end - start);
 
             return result;
-        } catch (Throwable e) {
+        } catch (final Throwable e) {
             long end = System.currentTimeMillis();
             log.info("-------------------");
             log.info("Time consumed: {} ms with exception: {}", end - start, e.getMessage());
@@ -52,6 +55,12 @@ public class ControllerInterceptor {
     public void beforeMethod(final JoinPoint jp) {
         log.info("===================");
         startTime.set(System.currentTimeMillis());
+    }
+
+    @Before(value = "@annotation(authorization)")
+    public void beforeMethod(final JoinPoint jp, final Authorization authorization) throws AuthorizationException {
+        final String token = jp.getArgs().length == 0 ? null : (String) jp.getArgs()[0];
+        AuthorizationValidator.validateUser(token, authorization.permission());
     }
 
     @AfterReturning(value = "execution(* com.mindata.superheroes.controllers.*.*(..))")

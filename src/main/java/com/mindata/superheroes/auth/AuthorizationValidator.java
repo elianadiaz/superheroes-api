@@ -1,10 +1,13 @@
 package com.mindata.superheroes.auth;
 
 import com.mindata.superheroes.exceptions.AuthorizationException;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
-public final class AuthorizationInterceptor {
+public final class AuthorizationValidator {
+
+    private AuthorizationValidator() {}
 
     private static final String TOKEN_USER_ADMIN_ROLE = "TEST_ADMIN_ROLE";
     private static final String TOKEN_USER_VIEW_ROLE = "TEST_VIEW_ROLE";
@@ -16,7 +19,7 @@ public final class AuthorizationInterceptor {
     }
 
     public static void validateUser(final String token, final Permission permission) throws AuthorizationException {
-        if (token == null) {
+        if (StringUtils.isEmpty(token)) {
             throw AuthorizationException.ofMissingToken();
         }
 

@@ -65,6 +65,7 @@ public class SuperheroServiceImpl implements SuperheroService {
     @Override
     @CachePut(NAME_CACHE)
     public Superhero updateSuperhero(final Long superheroId, final Superhero superheroWithUpdates) throws SuperheroException {
+        // TODO: esto puede llevarse a aspect
         if (superheroWithUpdates == null || superheroId == null
             || superheroWithUpdates.getName() == null || superheroWithUpdates.getName().trim().isBlank()) {
             throw SuperheroException.ofBadRequest();

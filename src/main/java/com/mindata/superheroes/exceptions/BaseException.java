@@ -1,6 +1,7 @@
 package com.mindata.superheroes.exceptions;
 
 import com.mindata.superheroes.responses.ErrorResponse;
+import org.springframework.http.HttpStatus;
 
 public abstract class BaseException extends Exception {
 
@@ -24,8 +25,14 @@ public abstract class BaseException extends Exception {
     }
 
     /**
-     * Maps the current Business Exception to a REST ErrorResponse
-     * @return the ErrorResponse representing the current BusinessException
+     * Maps the current Exception to a REST ErrorResponse
+     * @return the ErrorResponse representing the current Exception
      */
     public abstract ErrorResponse toErrorResponse();
+
+    /**
+     * Get status
+     * @return the HttpStatus
+     */
+    public abstract HttpStatus getStatus();
 }

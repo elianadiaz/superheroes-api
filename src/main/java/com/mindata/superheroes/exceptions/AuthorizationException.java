@@ -12,7 +12,7 @@ public class AuthorizationException extends BaseException {
 
     private final String error;
     private final String message;
-    private final int status;
+    private final HttpStatus status;
 
     /**
      * Private constructor. Creates a SuperheroException with error, message and status.
@@ -21,7 +21,7 @@ public class AuthorizationException extends BaseException {
      * @param message       the error message
      * @param status        the error status
      */
-    private AuthorizationException(final String error, final String message, final int status) {
+    private AuthorizationException(final String error, final String message, final HttpStatus status) {
         super(message);
         this.error = error;
         this.message = message;
@@ -34,7 +34,7 @@ public class AuthorizationException extends BaseException {
      * @return a new {@link AuthorizationException} with error, message and status.
      */
     public static AuthorizationException ofUnauthorized() {
-        return new AuthorizationException("unauthorized_user", "Invalid token", HttpStatus.UNAUTHORIZED.value());
+        return new AuthorizationException("unauthorized_user", "Invalid token", HttpStatus.UNAUTHORIZED);
     }
 
     /**
@@ -43,7 +43,7 @@ public class AuthorizationException extends BaseException {
      * @return a new {@link AuthorizationException} with error, message and status.
      */
     public static AuthorizationException ofForbidden() {
-        return new AuthorizationException("forbidden_user", "Invalid user", HttpStatus.FORBIDDEN.value());
+        return new AuthorizationException("forbidden_user", "Invalid user", HttpStatus.FORBIDDEN);
     }
 
     /**
@@ -52,7 +52,7 @@ public class AuthorizationException extends BaseException {
      * @return a new {@link AuthorizationException} with error, message and status.
      */
     public static AuthorizationException ofMissingToken() {
-        return new AuthorizationException("missing_token", "Missing token", HttpStatus.UNAUTHORIZED.value());
+        return new AuthorizationException("missing_token", "Missing token", HttpStatus.UNAUTHORIZED);
     }
 
     @Override

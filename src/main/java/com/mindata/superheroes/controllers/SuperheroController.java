@@ -1,78 +1,67 @@
 package com.mindata.superheroes.controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
+import com.mindata.superheroes.auth.Authorization;
+import com.mindata.superheroes.auth.Permission;
 import com.mindata.superheroes.entities.Filter;
 import com.mindata.superheroes.exceptions.SuperheroException;
 import com.mindata.superheroes.models.Superhero;
 import com.mindata.superheroes.services.SuperheroService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import spark.Request;
-import spark.Response;
 
 import java.util.List;
 
-import static com.mindata.superheroes.constants.RouteConstants.QUERY_PARAM_WORD_IN_NAME;
-import static com.mindata.superheroes.constants.RouteConstants.PARAM_SUPERHERO_ID;
-
 @RestController
+@RequestMapping("/superheroes")
 public class SuperheroController {
 
-    private final SuperheroService superheroService;
-    private final Gson gson;
+    public static final String HEADER_TOKEN = "Token";
 
-    public SuperheroController(@Autowired final SuperheroService superheroService) {
+    private SuperheroService superheroService;
+
+    @Autowired
+    public SuperheroController(final SuperheroService superheroService) {
         this.superheroService = superheroService;
-        this.gson = new Gson();
     }
 
     // TODO: FALTA EL PAGINADO
-    public List<Superhero> getAllSuperheroes(final Request request, final Response response) {
-        final Filter filter = new Filter(request.queryParams(QUERY_PARAM_WORD_IN_NAME));
-
-        response.status(HttpStatus.OK.value());
-        return superheroService.getSuperheroes(filter);
+    @Authorization(permission = Permission.VIEW)
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Superhero>> getAllSuperheroes(@RequestHeader(HEADER_TOKEN) String token,
+        @RequestParam(required = false, name = "name") final String name) {
+        return new ResponseEntity<>(superheroService.getSuperheroes(new Filter(name)), HttpStatus.OK);
     }
 
-    public Superhero getSuperheroById(final Request request, final Response response) throws SuperheroException {
-        final Long superheroId = getSuperheroId(request);
-
-        try {
-            response.status(HttpStatus.OK.value());
-            return superheroService.getSuperheroById(superheroId);
-        } catch (final SuperheroException e) {
-            response.status(e.getStatus());
-            throw e;
-        }
+    @Authorization(permission = Permission.VIEW)
+    @GetMapping(value = "/{superheroId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Superhero> getSuperheroById(@RequestHeader(HEADER_TOKEN) String token, @PathVariable final long superheroId)
+        throws SuperheroException {
+        return new ResponseEntity<>(superheroService.getSuperheroById(superheroId), HttpStatus.OK);
     }
 
-    public Superhero updateSuperhero(final Request request, final Response response) throws SuperheroException {
-        final Long superheroId = getSuperheroId(request);
-
-        try {
-            response.status(HttpStatus.ACCEPTED.value());
-            return superheroService.updateSuperhero(superheroId, this.gson.fromJson(request.body(), Superhero.class));
-        } catch (final SuperheroException e) {
-            response.status(e.getStatus());
-            throw e;
-        } catch (final JsonSyntaxException e) {
-            response.status(HttpStatus.BAD_REQUEST.value());
-            throw e;
-        }
+    @Authorization(permission = Permission.UPDATE)
+    @PutMapping(value = "/{superheroId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Superhero> updateSuperhero(@RequestHeader(HEADER_TOKEN) String token, @PathVariable final long superheroId,
+        @RequestBody final Superhero superhero) throws SuperheroException {
+        return new ResponseEntity<>(superheroService.updateSuperhero(superheroId, superhero), HttpStatus.ACCEPTED);
     }
 
-    public void deleteSuperheroById(final Request request, final Response response) {
-        final Long superheroId = getSuperheroId(request);
-
+    @Authorization(permission = Permission.DELETE)
+    @DeleteMapping(value = "/{superheroId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity deleteSuperheroById(@RequestHeader(HEADER_TOKEN) String token, @PathVariable final long superheroId) {
         superheroService.deleteSuperhero(superheroId);
-        response.status(HttpStatus.OK.value());
-    }
-
-    private Long getSuperheroId(final Request request) {
-        return StringUtils.isEmpty(request.params(PARAM_SUPERHERO_ID)) ? null : Long.parseLong(request.params(PARAM_SUPERHERO_ID));
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
 }
