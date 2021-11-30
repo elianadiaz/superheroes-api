@@ -13,8 +13,11 @@ import javax.sql.DataSource;
 @EnableCaching
 public class SuperheroApiApplication implements CommandLineRunner {
 
-	@Autowired
-	private DataSource dataSource;
+	private final DataSource dataSource;
+
+	public SuperheroApiApplication(@Autowired final DataSource dataSource) {
+		this.dataSource = dataSource;
+	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(SuperheroApiApplication.class, args);
