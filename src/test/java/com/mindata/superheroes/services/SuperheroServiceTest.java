@@ -26,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -45,12 +46,12 @@ public class SuperheroServiceTest {
     private SuperheroService superheroService;
 
     @BeforeEach
-    public void setUpd() {
+    public void setUp() {
         superheroService = new SuperheroServiceImpl(superheroRepository);
     }
 
     @Test
-    public void giveAllWhenGetSuperherosThenReturnAllSuperheros() {
+    public void giveAllWhenGetSuperherosThenReturnAllSuperheroes() {
         final List<Superhero> superheroesMock = new ArrayList<>();
         superheroesMock.add(mock(Superhero.class));
         superheroesMock.add(mock(Superhero.class));
@@ -63,7 +64,7 @@ public class SuperheroServiceTest {
         assertFalse(superheroes.isEmpty());
         assertEquals(superheroesMock.size(), superheroes.toList().size());
 
-        verify(superheroRepository, times(1)).findAll(pageRequest);
+        verify(superheroRepository, times(1)).findAll(any(PageRequest.class));
     }
 
     @Test
@@ -93,9 +94,8 @@ public class SuperheroServiceTest {
 
     @Test
     public void giveWordWhenGetSuperheroesWithWordInNameThenReturnAllSuperherosWithWordInName() {
-        final Page<Superhero> superheroes = getMocksSuperheros();
-        final PageRequest pageRequest = PageRequest.of(1, 4);
-        when(superheroRepository.findWithWordInName(WORD_IN_NAME, pageRequest)).thenReturn(superheroes);
+        final Page<Superhero> superheroes = getMocksSuperheroes();
+        when(superheroRepository.findWithWordInName(eq(WORD_IN_NAME), any(PageRequest.class))).thenReturn(superheroes);
 
         final Page<Superhero> superheroesResult = superheroService.getSuperheroesWithWordInName(WORD_IN_NAME, 1, 4);
 
@@ -108,7 +108,7 @@ public class SuperheroServiceTest {
             assertThat(superhero.getName(), containsStringIgnoringCase(WORD_IN_NAME));
         });
 
-        verify(superheroRepository, times(1)).findWithWordInName(WORD_IN_NAME, pageRequest);
+        verify(superheroRepository, times(1)).findWithWordInName(eq(WORD_IN_NAME), any(PageRequest.class));
     }
 
     @Test
@@ -140,7 +140,7 @@ public class SuperheroServiceTest {
         verify(superheroRepository, times(1)).deleteById(SUPERHERO_ID);
     }
 
-    private Page<Superhero> getMocksSuperheros() {
+    private Page<Superhero> getMocksSuperheroes() {
         final List<Superhero> superheroes = new ArrayList<>();
 
         final Superhero superheroOne = mock(Superhero.class);

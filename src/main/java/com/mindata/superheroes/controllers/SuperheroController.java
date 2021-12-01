@@ -55,14 +55,14 @@ public class SuperheroController {
     @PutMapping(value = "/{superheroId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Superhero> updateSuperhero(@RequestHeader(HEADER_TOKEN) String token, @PathVariable final long superheroId,
         @RequestBody final Superhero superhero) throws SuperheroException {
-        return new ResponseEntity<>(superheroService.updateSuperhero(superheroId, superhero), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(superheroService.updateSuperhero(superheroId, superhero), HttpStatus.OK);
     }
 
     @Authorization(permission = Permission.DELETE)
     @DeleteMapping(value = "/{superheroId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity deleteSuperheroById(@RequestHeader(HEADER_TOKEN) String token, @PathVariable final long superheroId) {
         superheroService.deleteSuperhero(superheroId);
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
