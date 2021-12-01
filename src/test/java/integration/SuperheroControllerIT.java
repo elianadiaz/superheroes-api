@@ -21,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @SpringBootTest(classes = SuperheroApiApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SuperheroControllerIT {
@@ -78,7 +79,7 @@ public class SuperheroControllerIT {
 
         final Page<Superhero> superheroPage = response.getBody();
         assertFalse(superheroPage.isEmpty());
-        assertEquals(1, superheroPage.getTotalElements(), 0);
+        assertNotEquals(0, superheroPage.getTotalElements(), 0);
     }
 
     @Test

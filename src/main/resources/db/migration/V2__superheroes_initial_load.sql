@@ -1,2 +1,12 @@
 insert into superhero(id, name) values (1,  'Superhero 1');
 insert into superhero(id, name) values (2,  'Superhero 2');
+insert into superhero(id, name) values (3,  'Superhero 3');
+insert into superhero(id, name) values (4,  'Superhero 4');
+insert into superhero(id, name) values (5,  'Superhero 5');
+insert into superhero(id, name) values (6,  'Superhero 6');
+insert into superhero(id, name) values (7,  'Superhero 7');
+insert into superhero(id, name) values (8,  'Superhero 8');
+insert into superhero(id, name) values (9,  'Superhero 9');
+insert into superhero(id, name) values (10,  'Superhero 10');
+insert into superhero(id, name) values (11,  'Superhero 11');
+insert into superhero(id, name) values (12,  'Superhero 12');
